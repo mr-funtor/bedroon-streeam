@@ -20,11 +20,12 @@
 <br>
 <br>
 <br>
-<!-- <button onClick="connectSound()">Another person</button> -->
-
+<button onClick="connectSound()">Another person</button>
+<button onclick="joinRoom()">Join</button>
 
 <script>
 	const socket=io('https://bedroom-stream.herokuapp.com/');
+	let roomJoined;
 	
 	socket.on('connection');
 	function jaja(){
@@ -36,9 +37,9 @@
 		document.querySelector('p').innerHTML=data;
 	});
 	
-	socket.on('message',(data)=>{
-	console.log(data)
-		document.querySelector('p').innerHTML=data;
+	socket.on('message',(msg,room)=>{
+	console.log(msg,room)
+		document.querySelector('p').innerHTML=msg;
 		//document.querySelector('div').style.backgroundColor="yellow";
 	})
 	
@@ -52,10 +53,20 @@
 		togglePlay()
 	})
 	
+	socket.on('joinRoom',(room)=>{
+		console.log('joined',room)
+	})
+	
+	<!-- const sendMessage=()=>{ -->
+		<!-- const theWord=document.querySelector('.message').value; -->
+		
+		<!-- socket.emit('message',theWord) -->
+	<!-- } -->
+	
 	const sendMessage=()=>{
 		const theWord=document.querySelector('.message').value;
 		
-		socket.emit('message',theWord)
+		socket.emit('message',theWord,roomJoined)
 	}
 	
 	const changeColor=()=>{
@@ -66,6 +77,13 @@
 	const connectSound=()=>{
 		const room=document.querySelector('.room').value;
 		socket.emit('soundOn','',room)
+	}
+	
+	const joinRoom=()=>{
+		const room=document.querySelector('.room').value;
+		socket.emit('joinRoom',room)
+		roomJoined=document.querySelector('.room').value;
+		<!-- console.log(room) -->
 	}
 	
 	
