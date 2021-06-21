@@ -11,6 +11,8 @@ app.use(express.static('./views'))
 io.on('connection',(socket)=>{
 	console.log( "user connected "+socket.id);
 	
+	//sends welcome message
+	socket.emit('message','Hi. Welcome to my bedroom');
 	
 	socket.on('display',()=>{
 		socket.emit('display',socket.id)
@@ -21,10 +23,9 @@ io.on('connection',(socket)=>{
 		// socket.broadcast.emit('message', data)
 	// })
 	
-	socket.on('message',(msg,room)=>{
-		console.log(msg);
-		// socket.to(room).emit('message',msg)
-		io.to(room).emit('message',msg,room)
+	socket.on('chatMessage',(msg)=>{
+		console.log(msg)
+		io.emit('message', msg)
 	})
 	
 	socket.on('coloring',(msg,room)=>{
