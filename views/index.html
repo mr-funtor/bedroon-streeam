@@ -177,9 +177,9 @@
 	})
 	
 
-	socket.on('soundOn',(playState)=>{
+	socket.on('soundOn',(playState,theTimer)=>{
 		if(!joinedConvo)return;
-		togglePlay(playState)
+		togglePlay(playState,theTimer)
 	})
 	
 	const connectSound=()=>{
@@ -192,8 +192,9 @@
 	
 	const mainAudio=document.querySelector('.main-audio');
 	
-	function togglePlay(playState){
+	function togglePlay(playState,theTimer){
 			if(!playState){
+				mainAudio.currentTime=theTimer;
 				mainAudio.play();
 			}else{
 				mainAudio.pause();

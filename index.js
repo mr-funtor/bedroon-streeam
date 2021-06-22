@@ -43,9 +43,9 @@ io.on('connection',(socket)=>{
 	})
 	
 	
-	socket.on('soundOn',(msg,room)=>{
+	socket.on('soundOn',(msg)=>{
 		playState=!playState;
-		io.emit('soundOn',playState)
+		io.emit('soundOn',playState,theTimer)
 		// socket.to(room).emit('soundOn')
 		// socket.emit('coloring')
 	})
