@@ -193,3 +193,95 @@ nav{
 	border: 1px solid white;
 	cursor:pionter;
 }
+
+@media (max-width:700px){
+	.panel-container{
+		grid-template-columns: 1fr;
+	}
+	
+	.panel-container{
+	height: 85vh;
+	width:95%;
+	
+}
+
+	.music-area{
+		/* background:red; */
+		height:100%;
+		width: 100%;
+	}
+
+	.music-area>img{
+		height: 200px;
+	}
+
+	.song-display{
+		height: 70px;
+		width: 60%;
+		margin-top: 20px;
+		padding: 8px 20px 8px 20px;
+	}
+
+
+	.chatting-area{
+		height:100%;
+		width: 100%;
+		display:flex;
+		flex-direction:column;
+		justify-content:center;
+		align-items: center;
+	}
+
+	.message-box{
+		width: 70%;
+		height: 100px;
+		margin-top: 15px;
+	}
+
+
+	.inputed-words{
+		height: 40px;
+		width: 70%;
+		margin-top: 15px;
+	}
+
+	.chatting-area button{
+		height: 30px;
+		width: 150px;
+	}
+}
+
+@media (max-width:500px){
+	.chatting-area{
+		/* height:70%; */
+		width: 100%;
+		display:flex;
+		flex-direction:column;
+		justify-content:center;
+		align-items: center;
+	}
+	
+	.music-area{}
+	
+	.song-display{
+		width: 85%;
+	}
+
+	.message-box{
+		width: 85%;
+		height: 230px;
+		margin-top: 10px;
+	}
+
+
+	.inputed-words{
+		height: 40px;
+		width: 80%;
+		margin-top: 15px;
+	}
+
+	.chatting-area button{
+		height: 30px;
+		width: 150px;
+	}
+}

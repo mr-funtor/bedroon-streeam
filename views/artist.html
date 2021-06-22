@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>Learning Socket</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://kit.fontawesome.com/d84320f6bb.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
 	<link href="./css/main.css" rel="stylesheet">
@@ -86,8 +87,10 @@
 	let roomJoined;
 	
 	socket.on('connection');
+	
+	let presentName='Raldie';
 	function jaja(){
-		socket.emit('display')
+		socket.emit('welcome',presentName);
 	}
 	jaja()
 	
@@ -98,6 +101,26 @@
 	socket.on('display',(data)=>{
 		<!-- document.querySelector('p').innerHTML=data; -->
 	});
+	
+	
+	//displays the welcome message
+	socket.on('welcome',(msg,currentSong,theTrackName,playState,timer)=>{
+		messageDisplay.innerHTML+=`<p>Hi ${presentName}. Welcome to your bedroom</p>`;
+		joinedConvo=true;
+		loginArea.classList.add('hide');
+		
+		//change the title of the track
+		currentSongDisplay.innerText=currentSong;
+		
+		mainAudio.src=`./music/${theTrackName}.mp3`;
+		console.log(playState);
+		
+		if(playState){
+			mainAudio.currentTime=timer;
+			mainAudio.play();
+		}
+		
+	})
 
 	
 	//displays the welcome message
@@ -109,7 +132,7 @@
 	})
 	
 	//display messages in the message box
-	let presentName='Raldie';
+	
 	
 	sendBtn.addEventListener('click',()=>{
 		const words=typedMessage.value;
