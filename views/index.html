@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Learning Socket</title>
+	<title>More Songs</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://kit.fontawesome.com/d84320f6bb.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
@@ -11,21 +11,29 @@
 <audio src="./music/come-alive.mp3" class="main-audio"></audio>
 	<main>
 		<nav>
-			<ul>
+			<ul class="stream-logos">
 				<li>
-					<img/>
+					<a href="https://music.apple.com/ng/album/more-songs-from-my-bedroom/1572674145" target="new"><img src="./img/apple.png" alt="apple logo"/></a>
 				</li>
 				
 				<li>
-					<img/>
+					<a href="https://open.spotify.com/album/7uEiO7R3IvQJjHPiNci682" target="new"><img src="./img/spotify.png" alt="spotify logo"/></a>
 				</li>
 				
 				<li>
-					<img/>
+					<img src="./img/soundcloud.png" alt="soundcloud logo"/>
 				</li>
 				
 				<li>
-					<img/>
+					<a href="https://www.boomplay.com/albums/27104617" target="new"><img src="./img/boomplay.png" alt="boomplay logo"/></a>
+				</li>
+				
+				<li>
+					<a href="https://deezer.page.link/Lm7qY6Wk9EiNwbvE8" target="new"><img src="./img/deezer.png" alt="deezer logo"/></a>
+				</li>
+				
+				<li>
+					<img src="./img/audiomack.png"/>
 				</li>
 			</ul>
 
@@ -142,8 +150,7 @@
 	socket.on('message',(msg)=>{
 		messageDisplay.innerHTML+=`<p>${msg}</p>`;
 		messageDisplay.scrollTo(0,messageDisplay.scrollHeight)
-		typedMessage.value="";
-		typedMessage.focus();
+		
 		
 	})
 	
@@ -154,6 +161,8 @@
 		if(!words)return;
 		
 		socket.emit('chatMessage',words,presentName);
+		typedMessage.value="";
+		typedMessage.focus();
 		
 	})
 	
@@ -194,7 +203,7 @@
 	const mainAudio=document.querySelector('.main-audio');
 	
 	function togglePlay(playState,theTimer){
-			if(!playState){
+			if(playState){
 				mainAudio.currentTime=theTimer;
 				mainAudio.play();
 			}else{

@@ -15,6 +15,15 @@ nav{
 	border-bottom: 0.5px solid lightgrey;
 }
 
+.stream-logos{
+	list-style:none;
+	width:100%;
+	display:flex;
+	justify-content: space-around;
+	align-items:center;
+	padding-top: 4px;
+}
+
 .panel-container{
 	height: 85vh;
 	width:95%;
@@ -83,8 +92,7 @@ nav{
 	padding: 5px;
 	margin: 10px auto 10px auto;
 	border-radius: 5px;
-	
-	
+	word-break: break-all;
 }
 
 .inputed-words{
@@ -168,6 +176,7 @@ nav{
 
 .login-area>h2{
 	margin-bottom: 40px;
+	text-align:center;
 	/* background:black; */
 }
 
@@ -191,7 +200,7 @@ nav{
 	background:transparent;
 	border-radius:5px;
 	border: 1px solid white;
-	cursor:pionter;
+	cursor:pointer;
 }
 
 @media (max-width:700px){
