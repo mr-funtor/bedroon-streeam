@@ -58,7 +58,7 @@ io.on('connection',(socket)=>{
 	
 	socket.on('tracker',(timer)=>{
 		theTimer=timer;
-		console.log(theTimer)
+		// console.log(theTimer)
 	})
 	
 	
