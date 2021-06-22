@@ -7,7 +7,7 @@
  
 </head>
 <body>
-<audio src="./darklust.mp3" class="main-audio"></audio>
+<audio src="./music/come-alive.mp3" class="main-audio"></audio>
 	<main>
 		<nav>
 			<ul>
@@ -36,7 +36,7 @@
 				<img src="./img/album.jpeg" alt="album art"/>
 				<article class="song-display">
 					
-						<p><i class="fas fa-music"></i><span>Come Alive</span></p>
+						<p><i class="fas fa-music"></i><span class="current-song">Come Alive</span></p>
 						
 						<p><i class="fas fa-compact-disc"></i><span>More Songs From My Bedroom</span></p>
 					
@@ -57,6 +57,14 @@
 			
 			</aside>
 		</section>
+		
+		<section class="login-area">
+			<h2>More Songs From My Bedroom</h2>
+			<label for="name">Your Name</label>
+			<input type="name" id="name" class="user-name">
+			<button class="welcome-button">Come In</button>
+		
+		</section>
 
 
 	</main>
@@ -67,9 +75,57 @@
 	
 	socket.on('connection');
 	function jaja(){
-		socket.emit('display')
+		<!-- socket.emit('display') -->
+		
 	}
 	jaja()
+	
+	//ACCEPT NAME
+	const userName=document.querySelector('.user-name');
+	const welcomeBtn=document.querySelector('.welcome-button');
+	const loginArea=document.querySelector('.login-area');
+	let presentName;
+	let joinedConvo=false;
+	
+	welcomeBtn.addEventListener('click',()=>{
+		const newName=userName.value;
+		
+		if(!newName)return;
+		presentName=newName;
+		console.log(newName)
+		socket.emit('welcome',newName);
+		
+	})
+	
+	const currentSongDisplay=document.querySelector('.current-song');
+	
+	//displays the welcome message
+	socket.on('welcome',(msg,currentSong,theTrackName,playState,timer)=>{
+		messageDisplay.innerHTML+=`<p>${msg}</p>`;
+		joinedConvo=true;
+		loginArea.classList.add('hide');
+		
+		//change the title of the track
+		currentSongDisplay.innerText=currentSong;
+		
+		mainAudio.src=`./music/${theTrackName}.mp3`;
+		console.log(playState);
+		
+		if(playState){
+			mainAudio.currentTime=timer;
+			mainAudio.play();
+		}
+		
+	})
+	
+	userName.addEventListener('keydown',(e)=>{
+		
+		if(e.keyCode===13){
+			welcomeBtn.click();
+		}
+	})
+	
+	
 	
 	const messageDisplay=document.querySelector('.message-box')
 	const typedMessage=document.querySelector('.inputed-words')
@@ -81,19 +137,22 @@
 	
 
 	
-	//displays the welcome message
+	//displays the messages
 	socket.on('message',(msg)=>{
 		messageDisplay.innerHTML+=`<p>${msg}</p>`;
 		messageDisplay.scrollTo(0,messageDisplay.scrollHeight)
 		typedMessage.value="";
 		typedMessage.focus();
+		
 	})
 	
 	//display messages in the message box
 	sendBtn.addEventListener('click',()=>{
 		const words=typedMessage.value;
 		
-		socket.emit('chatMessage',words);
+		if(!words)return;
+		
+		socket.emit('chatMessage',words,presentName);
 		
 	})
 	
@@ -104,14 +163,24 @@
 		}
 	})
 	
-
-	socket.on('soundOn',()=>{
-		togglePlay()
+	
+	//PLAY LISTENER SONG
+	
+	
+	socket.on('trackPlay',(trackName,innerName)=>{
+		if(!joinedConvo)return;
+		mainAudio.src=`./music/${trackName}.mp3`;
+		mainAudio.play();
+		
+		//change the title of the track
+		currentSongDisplay.innerText=innerName;
 	})
 	
 
-	
-
+	socket.on('soundOn',(playState)=>{
+		if(!joinedConvo)return;
+		togglePlay(playState)
+	})
 	
 	const connectSound=()=>{
 		const room=document.querySelector('.room').value;
@@ -122,17 +191,22 @@
 	
 	
 	const mainAudio=document.querySelector('.main-audio');
-	playState=false
-	function togglePlay(){
+	
+	function togglePlay(playState){
 			if(!playState){
-			mainAudio.play()
-			playState=!playState
+				mainAudio.play();
 			}else{
-				mainAudio.pause()
-			playState=!playState
+				mainAudio.pause();
 			}
 	
 	}
+	
+	socket.on('stopAudio',()=>{
+		mainAudio.pause();
+		mainAudio.currentTime=0;
+	})
+	
+	
 	
 	
 </script>

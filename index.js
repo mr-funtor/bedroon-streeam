@@ -6,46 +6,61 @@ const io=require('socket.io')(server,{
 })
 
 //Declare static folder
-app.use(express.static('./views'))
+app.use(express.static('./views'));
+
+let playState=false;
+let currentSong='Come Alive';
+let theTrackName='come-alive';
+let theTimer=0;
 
 io.on('connection',(socket)=>{
 	console.log( "user connected "+socket.id);
 	
 	//sends welcome message
-	socket.emit('message','Hi. Welcome to my bedroom');
+	// socket.emit('message','Hi. Welcome to my bedroom');
+	
+	socket.on('welcome',(newName)=>{
+		
+		socket.emit('welcome',`Hi ${newName}. Welcome to my bedroom`,currentSong,theTrackName,playState,theTimer);
+		// socket.emit('welcome',`Currently playing: ${currentSong}`);
+		socket.broadcast.emit('message',`${newName} entered the bedroom`)
+	})
 	
 	socket.on('display',()=>{
 		socket.emit('display',socket.id)
 	})
 	
-	// socket.on('message',(data)=>{
-		// console.log(data);
-		// socket.broadcast.emit('message', data)
-	// })
-	
-	socket.on('chatMessage',(msg)=>{
+	socket.on('chatMessage',(msg,presentName)=>{
 		console.log(msg)
-		io.emit('message', msg)
+		io.emit('message', `${presentName}: ${msg}`)
 	})
 	
-	socket.on('coloring',(msg,room)=>{
-		// io.emit('coloring',room)
-		socket.to(room).emit('coloring')
-		socket.emit('coloring')
-		console.log('colorin')
+	socket.on('trackPlay',(trackName,innerName)=>{
+		playState=true;
+		currentSong=innerName;
+		theTrackName=trackName
+		io.emit('trackPlay',trackName,innerName)
 	})
+	
 	
 	socket.on('soundOn',(msg,room)=>{
-		// io.emit('coloring',room)
-		socket.to(room).emit('soundOn')
+		playState=!playState;
+		io.emit('soundOn',playState)
+		// socket.to(room).emit('soundOn')
 		// socket.emit('coloring')
 	})
 	
-	socket.on('joinRoom',(room)=>{
-		
-		socket.join(room)
-		socket.emit('joinRoom',room)
+	socket.on('stopAudio',()=>{
+		playState=false;
+		io.emit('stopAudio',playState)
 	})
+	
+	
+	socket.on('tracker',(timer)=>{
+		theTimer=timer;
+		console.log(theTimer)
+	})
+	
 	
 })
 

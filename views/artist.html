@@ -7,7 +7,7 @@
  
 </head>
 <body>
-<audio src="./darklust.mp3" class="main-audio"></audio>
+<audio src="./music/come-alive.mp3" class="main-audio"></audio>
 	<main>
 		<nav>
 			<ul>
@@ -36,7 +36,7 @@
 				<img src="./img/album.jpeg" alt="album art"/>
 				<article class="song-display">
 					
-						<p><i class="fas fa-music"></i><span>Come Alive</span></p>
+						<p ><i class="fas fa-music"></i><span class="current-song">Come Alive</span></p>
 						
 						<p><i class="fas fa-compact-disc"></i><span>More Songs From My Bedroom</span></p>
 					
@@ -59,11 +59,23 @@
 		</section>
 		
 		<section class="songs-control">
-			<div>
+			<div class="songs-panel">
+				<p class="the-tracks" data-track="come-alive">Come Alive</p>
+				<p class="the-tracks" data-track="casper">0700-MCM-CASPER</p>
+				<p class="the-tracks" data-track="ldr">LDR</p>
+				<p class="the-tracks" data-track="this-ain't-luv">THISAINTLUV</p>
+				<p class="the-tracks" data-track="nimh">NIMH</p>
+				<p class="the-tracks" data-track="sos">SOS</p>
+				<p class="the-tracks" data-track="beach">Beach</p>
+				<p class="the-tracks" data-track="vn">VN</p>
+				<p class="the-tracks" data-track="come-alive">One of Those Days (For The Gram)</p>
 			
 			</div>
 			
-			<div></div>
+			<div class="playing-panel">
+				<button class="play-button"><i class="fas fa-play"></i></button>
+				<button class="stop-button"><i class="fas fa-stop"></i></button>
+			</div>
 		</section>
 
 
@@ -97,10 +109,14 @@
 	})
 	
 	//display messages in the message box
+	let presentName='Raldie';
+	
 	sendBtn.addEventListener('click',()=>{
 		const words=typedMessage.value;
 		
-		socket.emit('chatMessage',words);
+		if(!words)return;
+		
+		socket.emit('chatMessage',words,presentName);
 		
 	})
 	
@@ -112,12 +128,35 @@
 	})
 	
 
-	socket.on('soundOn',()=>{
-		togglePlay()
-	})
+	
 	
 
+	//PLAY SONGS
+	const allTracks=document.querySelectorAll('.the-tracks');
+	const currentSongDisplay=document.querySelector('.current-song');
+	let startedPlaying=false;
 	
+	allTracks.forEach((track)=>{
+		track.addEventListener('click',(e)=>{
+			
+			let trackName= e.currentTarget.dataset.track;
+			let innerName= e.currentTarget.innerText;
+			console.log(trackName);
+			
+			socket.emit('trackPlay',trackName,innerName)
+		})
+	})
+	
+	socket.on('trackPlay',(trackName,innerName)=>{
+		mainAudio.src=`./music/${trackName}.mp3`;
+		mainAudio.play();
+		
+		//change icon to pause
+		playBtn.firstElementChild.className='fas fa-pause';
+		
+		//change the title of the track
+		currentSongDisplay.innerText=innerName
+	})
 
 	
 	const connectSound=()=>{
@@ -125,21 +164,49 @@
 		socket.emit('soundOn','',room)
 	}
 	
-
+	//PLAY/STOP SOUND
+	const playBtn=document.querySelector('.play-button');
+	const stopBtn=document.querySelector('.stop-button');
 	
+	playBtn.addEventListener('click',()=>{
+		socket.emit('soundOn')
+	})
+	
+	socket.on('soundOn',(playState)=>{
+		togglePlay(playState)
+	})
+	
+	stopBtn.addEventListener('click',()=>{
+		socket.emit('stopAudio')
+	})
+	
+	socket.on('stopAudio',()=>{
+		mainAudio.pause();
+		mainAudio.currentTime=0;
+		playBtn.firstElementChild.className='fas fa-play';
+	})
 	
 	const mainAudio=document.querySelector('.main-audio');
-	playState=false
-	function togglePlay(){
+	
+	function togglePlay(playState){
 			if(!playState){
-			mainAudio.play()
-			playState=!playState
+				playBtn.firstElementChild.className='fas fa-pause';
+				
+				mainAudio.play()
+				
 			}else{
+				playBtn.firstElementChild.className='fas fa-play';
 				mainAudio.pause()
-			playState=!playState
+			
 			}
 	
 	}
+	
+	//track the timing of songs
+	let timeTracker=setInterval(()=>{
+		const timer=mainAudio.currentTime;
+		socket.emit('tracker',timer)
+	},1000)
 	
 	
 </script>
